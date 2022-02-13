@@ -5,12 +5,12 @@
     <title>RunDay</title>
 </head>
 <body>
-    <h1>Welcome to registration!</h1>
+    <h1>Добро пожаловать на страницу регистрации</h1>
     <form th:action="@{/runday/registration}" method="post">
-        <div><label> User Name : <input type="text" name="username"/> </label></div>
-        <div><label> Password: <input type="password" name="password"/> </label></div>
-        <div><input type="submit" value="Sign Up"/></div>
+        <div><label> User Name : <input type="text" name="username" placeholder="Введите имя"/> </label></div>
+        <div><label> Password: <input type="password" name="password" placeholder="Введите пароль"/> </label></div>
+        <div><input type="submit" value="Регистрация"/></div>
     </form>
-    <a th:href="@{/runday/login}">back</a>
+    <a th:href="@{/runday/login}">Вернуться</a>
 </body>
 </html>

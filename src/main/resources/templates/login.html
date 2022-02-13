@@ -7,17 +7,17 @@
 <body>
     <h1>Welcome Guest!</h1>
     <div th:if="${param.error}">
-        Invalid username and password.
+        Неправильные имя или пароль
     </div>
     <div th:if="${param.logout}">
-        You have been logged out.
+        Вы покинули приложение
     </div>
     <form th:action="@{/runday/auth/login}" method="post">
-        <h2>Login</h2>
-        <div><label> User Name : <input type="text" name="username" placeholder="Username" required/> </label></div>
-        <div><label> Password: <input type="password" name="password" placeholder="Password" required/> </label></div>
-        <div><input type="submit" value="Sign In"/></div>
+        <h2>Введите данные аккаунта RunDay</h2>
+        <div><label> User Name : <input type="text" name="username" placeholder="Введите имя" required/> </label></div>
+        <div><label> Password: <input type="password" name="password" placeholder="Введите пароль" required/> </label></div>
+        <div><input type="submit" value="Войти"/></div>
     </form>
-    <a th:href="@{/runday/registration}">Add new user</a>
+    <a th:href="@{/runday/registration}">Зарегистрироваться</a>
 </body>
 </html>

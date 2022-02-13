@@ -1,32 +1,26 @@
 package ru.vyacheslavkozlov.firstrunday.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.vyacheslavkozlov.firstrunday.service.AccountService;
 
-@RestController
+@AllArgsConstructor
+@Controller
+@RequestMapping("/runday/registration")
 public class RegistrationController {
-    public final AccountService accountService;
 
-    public RegistrationController(AccountService accountService) {
-        this.accountService = accountService;
+    private final AccountService accountService;
+
+    @GetMapping
+    public String getRegistrationPage(){
+        return "registration";
     }
 
-    @GetMapping("/")
-    public String getStartPage(Model model){
-        return "Hello!";
-    }
-
-    @GetMapping("/user")
-    public String getUserPage(){
-        return "user";
-    }
-
-    @GetMapping("/admin")
-    public String getAdminPage(){
-        return "admin";
-    }
-
+//    @PostMapping
+//    public Account createAccount(@RequestBody Account account){
+//        accountService.save(account);
+//        return account;
+//    }
 }

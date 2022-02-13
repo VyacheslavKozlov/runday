@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RunDay</title>
+</head>
+<body>
+    <h1>Welcome Guest!</h1>
+    <div th:if="${param.error}">
+        Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+        You have been logged out.
+    </div>
+    <form th:action="@{/runday/auth/login}" method="post">
+        <h2>Login</h2>
+        <div><label> User Name : <input type="text" name="username" placeholder="Username" required/> </label></div>
+        <div><label> Password: <input type="password" name="password" placeholder="Password" required/> </label></div>
+        <div><input type="submit" value="Sign In"/></div>
+    </form>
+    <a th:href="@{/runday/registration}">Add new user</a>
+</body>
+</html>

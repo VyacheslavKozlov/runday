@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RunDay</title>
+</head>
+<body>
+    <h1>Welcome to registration!</h1>
+    <form th:action="@{/runday/registration}" method="post">
+        <div><label> User Name : <input type="text" name="username"/> </label></div>
+        <div><label> Password: <input type="password" name="password"/> </label></div>
+        <div><input type="submit" value="Sign Up"/></div>
+    </form>
+    <a th:href="@{/runday/login}">back</a>
+</body>
+</html>

@@ -4,21 +4,24 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "account")
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "accounts")
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String firstName;
     private String lastName;
+    private String email;
     private String password;
+    private boolean enable;
 
     @CollectionTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"))
     @Enumerated(EnumType.STRING)

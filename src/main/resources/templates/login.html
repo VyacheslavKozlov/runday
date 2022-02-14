@@ -5,7 +5,7 @@
     <title>RunDay</title>
 </head>
 <body>
-    <h1>Welcome Guest!</h1>
+    <h1>Добро пожаловать!</h1>
     <div th:if="${param.error}">
         Неправильные имя или пароль
     </div>
@@ -14,7 +14,7 @@
     </div>
     <form th:action="@{/runday/auth/login}" method="post">
         <h2>Введите данные аккаунта RunDay</h2>
-        <div><label> User Name : <input type="text" name="username" placeholder="Введите имя" required/> </label></div>
+        <div><label> User Name : <input type="text" name="email" placeholder="Введите имя" required/> </label></div>
         <div><label> Password: <input type="password" name="password" placeholder="Введите пароль" required/> </label></div>
         <div><input type="submit" value="Войти"/></div>
     </form>

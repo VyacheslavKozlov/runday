@@ -1,8 +1,10 @@
 package ru.vyacheslavkozlov.firstrunday.entity;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -23,7 +25,9 @@ public class Account {
     private String password;
     private boolean enable;
 
-    @CollectionTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"))
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

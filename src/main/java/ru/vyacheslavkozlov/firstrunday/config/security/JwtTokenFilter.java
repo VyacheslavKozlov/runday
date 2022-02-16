@@ -24,19 +24,17 @@ public class JwtTokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest);
-
-        try{
-            if(token != null && jwtTokenProvider.validateToken(token)) {
+        try {
+            if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 if (authentication != null) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
-        }
-        catch (JwtAuthenticationException e) {
+        } catch (JwtAuthenticationException e) {
             SecurityContextHolder.clearContext();
-            ((HttpServletResponse) servletRequest).sendError(e.getHttpStatus().value());
-            throw new JwtAuthenticationException("Jwt token invalid!");
+            ((HttpServletResponse) servletResponse).sendError(e.getHttpStatus().value());
+            throw new JwtAuthenticationException("JWT token is expired or invalid");
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

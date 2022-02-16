@@ -40,7 +40,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("role", role);
         Date now = new Date();
-        Date validity = new Date(validityIntMilliSeconds);
+        Date validity = new Date(now.getTime() + validityIntMilliSeconds * 1000);
 
         return  Jwts.builder()
                 .setClaims(claims)
@@ -50,27 +50,25 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public boolean validateToken(String token){
-        try{
+    public boolean validateToken(String token) {
+        try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
-        }
-        catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("JWT token invalid", HttpStatus.UNAUTHORIZED);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
         }
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails  = this.userDetailsService.loadUserByUsername(getUserName(token));
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-
     }
 
-    public String getUserName(String token){
+    public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String resolveToken(HttpServletRequest request){
+    public String resolveToken(HttpServletRequest request) {
         return request.getHeader(authorizationHeader);
     }
 

@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private String firstName;
     private String lastName;
     private String email;
@@ -31,5 +32,6 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Sneakers> sneakers;
 }

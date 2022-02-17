@@ -6,9 +6,11 @@
 </head>
 <body>
     <h1>Добро пожаловать на страницу регистрации</h1>
-    <form th:action="@{/runday/registration}" method="post">
-        <div><label> User Name : <input type="text" name="username" placeholder="Введите имя"/> </label></div>
-        <div><label> Password: <input type="password" name="password" placeholder="Введите пароль"/> </label></div>
+    <form th:action="@{/runday/registration}" th:object="${account}" th:method="post">
+        <div><label> Имя <input type="text" th:field="*{firstName}" placeholder="Введите имя"/> </label></div>
+        <div><label> Фамилия <input type="text" th:field="*{lastName}" placeholder="Введите фамилию"/> </label></div>
+        <div><label> Email <input type="text" th:field="*{email}" placeholder="Введите email"/> </label></div>
+        <div><label> Пароль <input type="password" th:field="*{password}" placeholder="Введите пароль"/> </label></div>
         <div><input type="submit" value="Регистрация"/></div>
     </form>
     <a th:href="@{/runday/auth/login}">Вернуться</a>

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     @GetMapping
-    @PreAuthorize("hasAuthority('account:read')")
     public String helloAdmin(){
+
         return "admin";
     }
 }

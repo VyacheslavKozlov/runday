@@ -2,22 +2,49 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+<!--    <link rel="stylesheet" href="../static/css/style.css" />-->
     <title>RunDay</title>
 </head>
 <body>
-    <h1>Добро пожаловать!</h1>
+    <div class="welcome"><h3>Добро пожаловать в runDay!</h3></div>
+    <div class="container">
+        
+        <div class="paragraf">
+            <p>runDay - сервис для хранения беговых тренировок. 
+                Сервис позволяет также содержать сведения о спортивной 
+                беговой обуви, используемой на пробежках, а также 
+                формировать статистические сведения за требуемый и 
+                делиться ими в социальных сетях.</p>
+        </div>
+
+        <div class="login">
+            <form th:action="@{/runday/auth/login}" method="post">
+                <div>
+                    <label> Email </label>
+                    <input type="text" name="username" placeholder="Введите email" required/>
+                </div>
+                <div>
+                    <label> Пароль </label>
+                    <input type="password" name="password" placeholder="Введите пароль" required/>
+                </div>
+                <div>
+                    <input class="login_btn" type="submit" value="Войти"/>
+                </div>
+            </form>
+            <a th:href="@{/runday/registration}">У меня нет аккаунта:(</a>
+        </div>
+    </div>
+
+
+
+    
+    <!-- <h1>Добро пожаловать!</h1>
     <div th:if="${param.error}">
         Неправильные имя или пароль
     </div>
     <div th:if="${param.logout}">
         Вы покинули приложение
-    </div>
-    <form th:action="@{/runday/auth/login}" method="post">
-        <h2>Введите данные аккаунта RunDay</h2>
-        <div><label> User Name : <input type="text" name="email" placeholder="Введите имя" required/> </label></div>
-        <div><label> Password: <input type="password" name="password" placeholder="Введите пароль" required/> </label></div>
-        <div><input type="submit" value="Войти"/></div>
-    </form>
-    <a th:href="@{/runday/registration}">Зарегистрироваться</a>
+    </div> -->
+    
 </body>
 </html>

@@ -1,68 +1,72 @@
 package ru.vyacheslavkozlov.firstrunday.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.vyacheslavkozlov.firstrunday.config.security.JwtConfigurer;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtConfigurer jwtConfigurer;
+    private final UserDetailsService userDetailsService;
 
-    public WebSecurityConfig(JwtConfigurer jwtConfigurer) {
-        this.jwtConfigurer = jwtConfigurer;
+    public WebSecurityConfig(@Qualifier("accountDetailsServiceImpl") UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .authorizeRequests()
+                .antMatchers("/").permitAll()
                 .antMatchers("/runday").permitAll()
                 .antMatchers("/runday/auth/login").permitAll()
                 .antMatchers("/runday/registration").permitAll()
-                .antMatchers("/**/favicon.ico").permitAll()
-//                .antMatchers("/runday/registration").permitAll()
-//                .antMatchers(HttpMethod.GET, "/runday/admin").hasAuthority(Permission.ACCOUNT_READ.getPermission())
-//                .antMatchers(HttpMethod.POST, "/runday/admin").hasAuthority(Permission.ACCOUNT_WRITE.getPermission())
-//                .antMatchers(HttpMethod.DELETE, "/runday/admin").hasAuthority(Permission.ACCOUNT_WRITE.getPermission())
-//                .antMatchers(HttpMethod.GET, "/runday/runner").hasAuthority(Permission.ACCOUNT_READ.getPermission())
+                .antMatchers("/runday/admin/**").hasAuthority("account:write")
+                .antMatchers("/runday/runner/**").hasAnyAuthority("account:read", "account:write")
                 .anyRequest()
                 .authenticated()
                 .and()
-                .apply(jwtConfigurer);
-//                .formLogin()
-//                .loginPage("/runday/auth/login").permitAll()
-//                .defaultSuccessUrl("/runday/auth/success")
-//                .and()
-//                .logout()
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/runday/auth/logout", "POST"))
-//                .invalidateHttpSession(true)
-//                .clearAuthentication(true)
-//                .deleteCookies("JSESSIONID")
-//                .logoutSuccessUrl("/runday/auth/login");
+                .formLogin()
+                .loginPage("/runday/auth/login").permitAll()
+                .defaultSuccessUrl("/runday/runner/")
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/runday/auth/logout", "POST"))
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/runday/auth/login");
     }
 
-    @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
-        return super.authenticationManagerBean();
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     @Bean
-    protected PasswordEncoder passwordEncoder(){
+    protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    protected DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        return daoAuthenticationProvider;
     }
 }

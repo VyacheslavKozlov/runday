@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>RunDay</title>
 </head>
-<body>
-    <h1>Привет, Runner!</h1>
-</body>
+    <body>
+        <h1 th:inline="text">Привет [[${#httpServletRequest.remoteUser}]]!</h1>
+
+    </body>
 </html>

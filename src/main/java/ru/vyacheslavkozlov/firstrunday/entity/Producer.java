@@ -29,4 +29,6 @@ public class Producer{
 
     @OneToMany(mappedBy = "producer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ShoeModel> shoeModels;
+
+
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
+//@ToString
 @EqualsAndHashCode
 @Entity
 @Table(name = "sneakers")
@@ -40,6 +40,16 @@ public class Sneakers {
 
     @OneToMany(mappedBy = "sneakers", cascade = CascadeType.ALL)
     private List<Workout> workouts;
+
+    @Override
+    public String toString() {
+        return "Sneakers{" +
+                "id=" + id +
+                ", pair_number=" + pair_number +
+                ", enable=" + enable +
+                ", note='" + note + '\'' +
+                '}';
+    }
 }
 
 

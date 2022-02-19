@@ -10,7 +10,6 @@ import java.util.Date;
 @Setter
 @Getter
 @EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "workouts")
 public class Workout {
@@ -28,4 +27,15 @@ public class Workout {
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "sneakers_id")
     private Sneakers sneakers;
+
+    @Override
+    public String toString() {
+        return "Workout{" +
+                "id=" + id +
+                ", date=" + date +
+                ", distance=" + distance +
+                ", time=" + time +
+                ", health=" + health +
+                '}';
+    }
 }

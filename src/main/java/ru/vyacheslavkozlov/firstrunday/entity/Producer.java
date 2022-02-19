@@ -12,7 +12,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
 @EqualsAndHashCode
 @Entity
 @Table(name = "producers")
@@ -30,5 +29,11 @@ public class Producer{
     @OneToMany(mappedBy = "producer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ShoeModel> shoeModels;
 
-
+    @Override
+    public String toString() {
+        return "Producer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

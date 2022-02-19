@@ -12,9 +12,14 @@ import java.util.List;
 public class SneakersServiceImpl {
 
     private final SneakersRepository sneakersRepository;
+    private final WorkoutServiceImpl workoutService;
 
     public List<Sneakers> findAllByAccountId(int accountId){
-        return sneakersRepository.findAllByAccountId(accountId);
+        List<Sneakers> allSneakersByAccountId = sneakersRepository.findAllByAccountId(accountId);
+//        allSneakersByAccountId.stream().forEach(sneakers -> sneakers.setWorkouts(workoutService.findAllBySneakersId(sneakers.getId())));
+        System.out.println(allSneakersByAccountId);
+
+        return allSneakersByAccountId;
     }
 }
 

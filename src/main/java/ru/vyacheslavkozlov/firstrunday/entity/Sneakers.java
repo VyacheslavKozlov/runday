@@ -48,6 +48,8 @@ public class Sneakers {
                 ", pair_number=" + pair_number +
                 ", enable=" + enable +
                 ", note='" + note + '\'' +
+                ", shoeModel=" + shoeModel +
+                ", workouts=" + workouts +
                 '}';
     }
 }

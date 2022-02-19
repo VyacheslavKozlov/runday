@@ -2,10 +2,190 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all" href="../../css/modal.css" th:href="@{/css/modal.css}" />
     <title>RunDay</title>
 </head>
     <body>
         <h1 th:inline="text">Привет [[${#httpServletRequest.remoteUser}]]!</h1>
+        <div class="header">
+            <h1>RunDay</h1>
+        </div>
 
+        <div class="profile_container">
+            <div class="profile_content">
+                <img src="#" alt="photo_profile">
+                <h3>
+                    <span th:text="${account.getFirstName()}"></span>
+                    <span th:text="${account.getLastName()}"></span>
+                </h3>
+            </div>
+        </div>
+
+        <div class="sneakers_container">
+            <h2>Ваши кроссовки</h2>
+            <table id="table_sneakers">
+                <tr>
+                    <th>Производитель</th>
+                    <th>Модель</th>
+                </tr>
+                <tr id="#sneakers_row" th:each="s : ${sneakers}">
+                    <td th:text="${s.getId()}" hidden="true">id</td>
+                    <td th:text="${s.getShoeModel().getProducer().getName()}">id</td>
+                    <td th:text="${s.getShoeModel().getName()}">id</td>
+                    <td th:text="${s.getShoeModel().getVersion()}" hidden="true">id</td>
+                    <td th:text="${s.getShoeModel().getLimitation()}" hidden="true">limit</td>
+                    <td th:text="${s.getShoeModel().getDescription()}" hidden="true">id</td>
+                    <td th:text="${s.isEnable()}" hidden="true">enable</td>
+                    <td th:text="${s.getPair_number()}" hidden="true">pair</td>
+                    <td th:text="${s.getNote()}" hidden="true">note</td>
+                </tr>
+            </table>
+        </div>
+        <br>
+        <div class="sneakers_profile_container">
+            <h2>Какие-то кроссовки</h2>
+            <img src="#" alt="img_sneakers"/>
+            <label>Производитель<span id="sneakers_profile_producer">Призводитель</span></label>
+            <label>Модель<span id="sneakers_profile_model">Модель</span></label>
+            <label>Версия<span id="sneakers_profile_version">Версия</span></label>
+            <label>Описание<span id="sneakers_profile_description">Описание</span></label>
+            <label>Рекомендованный пробег <span id="sneakers_profile_limit">Лимит</span></label>
+            <label>Фактический пробег <span id="sneakers_profile_distance">Пробег</span></label>
+            <lable>Пара № <span id="sneakers_profile_pair">Пара</span></lable>
+            <span id="sneakers_profile_enable">Действующие</span>
+            <span id="sneakers_profile_note">Заметка</span>
+
+            <a id="edit_sneakers" href="#openModal">Редактировать</a>
+            <a href="#openModal">Удалить</a>
+        </div>
+        <br>
+
+
+        <br/>
+        <div class="workout_container">
+            <h2>Ваши тренировки</h2>
+            <table id="workout_table">
+                <tr>
+                    <th>Id</th>
+                    <th>Дата</th>
+                    <th>Расстояние</th>
+                    <th>Время</th>
+                    <th>Самочувствие</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr th:each="w : ${workout}">
+                    <td th:text="${w.getId()}">id</td>
+                    <td th:text="${w.getDate()}">id</td>
+                    <td th:text="${w.getDistance()}">id</td>
+                    <td th:text="${w.getTime()}">id</td>
+                    <td th:text="${w.getHealth()}">id</td>
+                    <td th:text="${w.getSneakers().getId()}" hidden="true">id</td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="#openModal">Открыть модальное окно</a>
+        </div>
+
+        <div id="openModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Название</h3>
+                        <a href="#close" title="Close" class="close">×</a>
+                    </div>
+                    <div class="modal-body">
+                        Содержимое модального окна...
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+<!-------------------------------------SCRIPTS----------------------------------------------->
+
+        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+        <script th:inline="javascript">
+
+            let rows_table_sneakers = document.querySelector('#table_sneakers').getElementsByTagName('tr')
+            addRowHover(rows_table_sneakers)
+
+            $('#table_sneakers').click(function(event) {
+                console.log('click table')
+                let row_sneakers = event.target.closest('tr')
+                if (!row_sneakers) return;
+                let cell_sneakers = row_sneakers.getElementsByTagName('td')
+
+                let sneakersProfileProducer = document.querySelector('#sneakers_profile_producer')
+                let sneakersProfileModel = document.querySelector('#sneakers_profile_model')
+                let sneakersProfilePair = document.querySelector('#sneakers_profile_pair')
+                let sneakersProfileEnable = document.querySelector('#sneakers_profile_enable')
+                let sneakersProfileLimit = document.querySelector('#sneakers_profile_limit')
+                let sneakersProfileNote = document.querySelector('#sneakers_profile_note')
+                let sneakersProfileModelVersion = document.querySelector('#sneakers_profile_version')
+                let sneakersProfileModelDesc= document.querySelector('#sneakers_profile_description')
+                let sneakersProfileDistance = document.querySelector('#sneakers_profile_distance')
+
+                sneakersProfileProducer.innerHTML = cell_sneakers[1].innerHTML
+                sneakersProfileModel.innerHTML = cell_sneakers[2].innerHTML
+                sneakersProfileModelVersion.innerHTML = cell_sneakers[3].innerHTML
+                sneakersProfileLimit.innerHTML = cell_sneakers[4].innerHTML
+                sneakersProfileModelDesc.innerHTML = cell_sneakers[5].innerHTML
+                sneakersProfileEnable.innerHTML = cell_sneakers[6].innerHTML === 'true' ? 'Ещё можно гонять' : 'Убитые'
+                sneakersProfilePair.innerHTML = cell_sneakers[7].innerHTML
+                sneakersProfileNote.innerHTML = cell_sneakers[8].innerHTML
+                sneakersProfileDistance.innerHTML = getDistance(cell_sneakers[0].innerHTML)
+            });
+
+            $('#edit_sneakers').click(function () {
+                // document.querySelector('#edit_sneakers').addEventListener('click', function () {
+                console.log('click')
+                // var scrollbar = document.body.clientWidth - window.innerWidth + 'px';
+                // console.log(scrollbar);
+                // let openModal = document.querySelector('#openModal')
+                // openModal.addEventListener('click', function () {
+                //     document.body.style.overflow = 'hidden';
+                //     document.querySelector('#openModal').style.marginLeft = scrollbar;
+                // });
+                // document.querySelector('#close').addEventListener('click', function () {
+                //     document.body.style.overflow = 'visible';
+                //     document.querySelector('#openModal').style.marginLeft = '0px';
+                // });
+            });
+
+
+// --------------------------------------ФУНКЦИИ---------------------------------------
+
+            // добавление цвета строке таблицы при наведении
+            function addRowHover(rows_table){
+                for (let i = 1; i < rows_table.length; i++) {
+                    MakeRowHover(rows_table[i]);
+                }
+            }
+            function MakeRowHover(row) {
+                row.addEventListener("mouseover", function() {
+                    this.style.backgroundColor = "silver";
+                });
+
+                row.addEventListener("mouseout", function() {
+                    this.style.backgroundColor = "white";
+                });
+            }
+
+            // функция для подсчета фактического пробега кроссовок за все тренировки
+            function getDistance(id_sneakers){
+                let workout = document.querySelector('#workout_table')
+                let rows = workout.getElementsByTagName('tr')
+                let distance = 0
+                for (let i = 1; i < rows.length; i++) {
+                    let td = rows[i].getElementsByTagName('td')
+                    if (td[5].innerHTML === id_sneakers) distance += Number(td[2].innerText)
+                }
+                return distance
+            }
+        </script>
     </body>
 </html>

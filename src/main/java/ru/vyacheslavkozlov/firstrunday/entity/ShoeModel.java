@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @Entity
 @Table(name = "models")
 public class ShoeModel {
@@ -48,4 +47,14 @@ public class ShoeModel {
     @OneToMany(mappedBy = "shoeModel", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<Sneakers> sneakers;
 
+    @Override
+    public String toString() {
+        return "ShoeModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", version='" + version + '\'' +
+                ", limitation=" + limitation +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

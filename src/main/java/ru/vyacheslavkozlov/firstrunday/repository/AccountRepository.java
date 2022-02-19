@@ -6,7 +6,6 @@ import ru.vyacheslavkozlov.firstrunday.entity.Account;
 
 import java.util.Optional;
 
-@Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     public Optional<Account> findByEmail(String email);

@@ -26,11 +26,6 @@ public class ShoeModel {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotEmpty(message = "Version should not be empty!")
-    @Size(min = 2, max = 20, message = "Version should ne between 2 and 30 characters!")
-    @Column(name = "version", nullable = false)
-    private String version;
-
     @Min(value = 1, message = "Limitation should be > 1")
     @Column(name = "limitation", nullable = false)
     private int limitation;
@@ -52,7 +47,6 @@ public class ShoeModel {
         return "ShoeModel{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", version='" + version + '\'' +
                 ", limitation=" + limitation +
                 ", description='" + description + '\'' +
                 '}';

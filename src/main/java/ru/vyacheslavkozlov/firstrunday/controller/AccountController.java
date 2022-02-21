@@ -33,10 +33,11 @@ public class AccountController {
         model.addAttribute("sneakers", allSneakersByAccountId);
         model.addAttribute("workout", workouts);
 
-//        List<Producer> allProducers = producerService.findAll();
-        List<ShoeModel> allShoeModel = shoeModelService.findAll();
+        List<Producer> allProducers = producerService.findAll();
+        List<ShoeModel> allShoeModels = shoeModelService.findAll();
 
-        model.addAttribute(allShoeModel);
+        model.addAttribute("producers", allProducers);
+        model.addAttribute("shoeModels", allShoeModels);
 
 //        allSneakersByAccountId.stream().forEach(sneakers -> sneakers.getWorkouts().stream().forEach(System.out::println));
 //        allSneakersByAccountId.stream().flatMap(sneakers -> workoutService.findAllBySneakersId(sneakers.getId()).stream())

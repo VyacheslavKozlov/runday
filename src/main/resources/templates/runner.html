@@ -30,38 +30,37 @@
                 </tr>
                 <tr id="#sneakers_row" th:each="s : ${sneakers}">
                     <td th:text="${s.getId()}" hidden="true">id</td>
-                    <td th:text="${s.getShoeModel().getProducer().getName()}">id</td>
-                    <td th:text="${s.getShoeModel().getName()}">id</td>
-                    <td th:text="${s.getShoeModel().getVersion()}" hidden="true">id</td>
+                    <td th:text="${s.getShoeModel().getProducer().getName()}">producer</td>
+                    <td th:text="${s.getShoeModel().getName()}">producer</td>
                     <td th:text="${s.getShoeModel().getLimitation()}" hidden="true">limit</td>
                     <td th:text="${s.getShoeModel().getDescription()}" hidden="true">id</td>
                     <td th:text="${s.isEnable()}" hidden="true">enable</td>
                     <td th:text="${s.getPair_number()}" hidden="true">pair</td>
                     <td th:text="${s.getNote()}" hidden="true">note</td>
+                    <td th:text="${s.getShoeModel().getProducer().getId()}" hidden="true">producer</td>
+                    <td th:text="${s.getShoeModel().getId()}" hidden="true">producer</td>
                 </tr>
             </table>
             <br>
             <div class="sneakers_profile">
                 <h2>Какие-то кроссовки</h2>
                 <img src="#" alt="img_sneakers"/>
-                <label>Производитель<span id="sneakers_profile_producer">Призводитель</span></label>
-                <label>Модель<span id="sneakers_profile_model">Модель</span></label>
-                <label>Версия<span id="sneakers_profile_version">Версия</span></label>
-                <label>Описание<span id="sneakers_profile_description">Описание</span></label>
+                <label>Идентификатор <span id="sneakers_profile_id" hidden="true">id</span></label>
+                <label>Производитель <span id="sneakers_profile_producer">Призводитель</span></label>
+                <label>Модель <span id="sneakers_profile_model">Модель</span></label>
+                <label>Описание <span id="sneakers_profile_description">Описание</span></label>
                 <label>Рекомендованный пробег <span id="sneakers_profile_limit">Лимит</span></label>
                 <label>Фактический пробег <span id="sneakers_profile_distance">Пробег</span></label>
                 <lable>Пара № <span id="sneakers_profile_pair">Пара</span></lable>
                 <span id="sneakers_profile_enable">Действующие</span>
                 <span id="sneakers_profile_note">Заметка</span>
 
-                <a id="edit_sneakers" href="#openModal">Редактировать</a>
-                <a href="#openModal">Удалить</a>
+                <a id="sneakers_edit_modal" href="#sneakers_modal">Редактировать</a>
+<!--                <a href="#sneakers_modal">Удалить</a>-->
             </div>
         </div>
-
         <br/>
         <br/>
-
         <div class="workout_container">
             <h2>Ваши тренировки</h2>
             <table id="workout_table">
@@ -97,17 +96,39 @@
 <!--            <a href="#openModal">Открыть модальное окно</a>-->
 <!--        </div>-->
 
-        <div id="openModal" class="modal">
+        <div id="sneakers_modal" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">Название</h3>
+                        <h3 class="modal-title">Редактирование кроссовок</h3>
                         <a href="#close" title="Close" class="close">×</a>
                     </div>
                     <div class="modal-body">
-                        Содержимое модального окна...
-
-                        <span></span>
+                        <form class="form_edit_sneakers">
+                            <label>Производитель </label>
+                            <select th:field="*{producers}" id="selectProducer">
+                                <div th:each="p : ${producers}">
+                                    <option th:value="${p.id}" th:text="${p.name}"></option>
+                                </div>
+                            </select>
+                            <br/>
+                            <label>Модель </label>
+                            <select th:field="*{shoeModels}" id="selectModel">
+                                <div th:each="s : ${shoeModels}">
+                                    <option th:value="${s.getProducer().getId()}" th:text="${s.name}"></option>
+                                </div>
+                            </select>
+                            <br/>
+                            <label>Рекомендуемый пробег </label> <span id="sneakers_edit_limit"></span>
+                            <br/>
+                            <label>Фактический пробег </label> <span id="sneakers_edit_distance"></span>
+                            <br/>
+                            <label>Пара </label> <span id="sneakers_edit_pair"></span>
+                            <br/>
+                            <label>Заметка </label> <span id="sneakers_edit_note"></span>
+                            <br/>
+                            <button type="submit">Ок</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -118,6 +139,7 @@
 
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script th:inline="javascript">
+            /*<![CDATA[*/
 
             let rows_table_sneakers = document.querySelector('#table_sneakers').getElementsByTagName('tr')
             addRowHover(rows_table_sneakers)
@@ -125,38 +147,41 @@
             let rows_table_workout = document.querySelector('#workout_table').getElementsByTagName('tr')
             addRowHover(rows_table_workout)
 
+            let sneakersProfileId = document.querySelector('#sneakers_profile_id')
+            let sneakersProfileProducer = document.querySelector('#sneakers_profile_producer')
+            let sneakersProfileModel = document.querySelector('#sneakers_profile_model')
+            let sneakersProfilePair = document.querySelector('#sneakers_profile_pair')
+            let sneakersProfileEnable = document.querySelector('#sneakers_profile_enable')
+            let sneakersProfileLimit = document.querySelector('#sneakers_profile_limit')
+            let sneakersProfileNote = document.querySelector('#sneakers_profile_note')
+            let sneakersProfileModelDesc= document.querySelector('#sneakers_profile_description')
+            let sneakersProfileDistance = document.querySelector('#sneakers_profile_distance')
+
+            // обработка клика на строку из таблицы кроссовок и добавление данных обуви в отдельный блок
+            // для получения полной информации
             $('#table_sneakers').click(function(event) {
-                console.log('click table')
                 let row_sneakers = event.target.closest('tr')
+
+                if (row_sneakers.rowIndex === 0) return;
                 if (!row_sneakers) return;
                 let cell_sneakers = row_sneakers.getElementsByTagName('td')
 
-                let sneakersProfileProducer = document.querySelector('#sneakers_profile_producer')
-                let sneakersProfileModel = document.querySelector('#sneakers_profile_model')
-                let sneakersProfilePair = document.querySelector('#sneakers_profile_pair')
-                let sneakersProfileEnable = document.querySelector('#sneakers_profile_enable')
-                let sneakersProfileLimit = document.querySelector('#sneakers_profile_limit')
-                let sneakersProfileNote = document.querySelector('#sneakers_profile_note')
-                let sneakersProfileModelVersion = document.querySelector('#sneakers_profile_version')
-                let sneakersProfileModelDesc= document.querySelector('#sneakers_profile_description')
-                let sneakersProfileDistance = document.querySelector('#sneakers_profile_distance')
-
+                sneakersProfileId.innerHTML = cell_sneakers[0].innerHTML
                 sneakersProfileProducer.innerHTML = cell_sneakers[1].innerHTML
                 sneakersProfileModel.innerHTML = cell_sneakers[2].innerHTML
-                sneakersProfileModelVersion.innerHTML = cell_sneakers[3].innerHTML
-                sneakersProfileLimit.innerHTML = cell_sneakers[4].innerHTML
-                sneakersProfileModelDesc.innerHTML = cell_sneakers[5].innerHTML
-                sneakersProfileEnable.innerHTML = cell_sneakers[6].innerHTML === 'true' ? 'Ещё можно гонять' : 'Убитые'
-                sneakersProfilePair.innerHTML = cell_sneakers[7].innerHTML
-                sneakersProfileNote.innerHTML = cell_sneakers[8].innerHTML
-                sneakersProfileDistance.innerHTML = getDistance(cell_sneakers[0].innerHTML)
+                sneakersProfileLimit.innerHTML = cell_sneakers[3].innerHTML
+                sneakersProfileModelDesc.innerHTML = cell_sneakers[4].innerHTML
+                sneakersProfileEnable.innerHTML = cell_sneakers[5].innerHTML === 'true' ? 'Ещё можно гонять' : 'Убитые'
+                sneakersProfilePair.innerHTML = cell_sneakers[6].innerHTML
+                sneakersProfileNote.innerHTML = cell_sneakers[7].innerHTML
+                sneakersProfileDistance.innerHTML = getDistance(sneakersProfileId.innerHTML)
             });
 
             // обработка клика на строку из таблицы тренировок и добавление данных тренировки в отдельный блок
             // для получения полной информации
             $('#workout_table').click(function (event){
-                console.log('click table workout')
                 let row_workout = event.target.closest('tr')
+                if (row_workout.rowIndex === 0) return;
                 if(!row_workout) return
                 let cell_workout = row_workout.getElementsByTagName('td')
 
@@ -176,20 +201,39 @@
                 workoutProfileModel.innerText = getTdFromSneakersTable(workoutProfileSneakersId, 2)
             });
 
-            $('#edit_sneakers').click(function () {
-                // document.querySelector('#edit_sneakers').addEventListener('click', function () {
-                console.log('click')
-                // var scrollbar = document.body.clientWidth - window.innerWidth + 'px';
-                // console.log(scrollbar);
-                // let openModal = document.querySelector('#openModal')
-                // openModal.addEventListener('click', function () {
-                //     document.body.style.overflow = 'hidden';
-                //     document.querySelector('#openModal').style.marginLeft = scrollbar;
-                // });
-                // document.querySelector('#close').addEventListener('click', function () {
-                //     document.body.style.overflow = 'visible';
-                //     document.querySelector('#openModal').style.marginLeft = '0px';
-                // });
+            // обработка модального окна: добавление данных из профиля кроссовок в модальное окно, для редактирования
+            $('#sneakers_edit_modal').click(function () {
+
+                let selectProducers = document.querySelector('#selectProducer')
+                let optionProducers = selectProducers.options
+                let optionModel = document.querySelector('#selectModel').options
+                let limit = document.querySelector('#sneakers_edit_limit')
+                let distance = document.querySelector('#sneakers_edit_distance')
+                let pair = document.querySelector('#sneakers_edit_pair')
+                let note = document.querySelector('#sneakers_edit_note')
+
+                limit.innerHTML = sneakersProfileLimit.innerText
+                distance.innerHTML = getDistance(sneakersProfileId.innerHTML)
+                pair.innerHTML = sneakersProfilePair.innerHTML
+                note.innerHTML = sneakersProfileNote.innerHTML
+
+                for (let option of optionProducers)
+                    if (option.text === sneakersProfileProducer.innerText) option.selected = true
+
+                for (let option of optionModel)
+                    if (option.text === sneakersProfileModel.innerText) option.selected = true
+
+                selectProducers.addEventListener('change', function (event){
+                    let selectedOptionProducer = event.target.options.selectedIndex+1
+                    for (let option of optionModel) {
+                        if (Number(option.value) !== Number(selectedOptionProducer)) option.style.display = 'none'
+                        else {
+                            option.selected = true
+                            option.style.display = 'inline'
+                        }
+                    }
+                    
+                })
             });
 
 
@@ -213,8 +257,10 @@
 
             // функция для подсчета фактического пробега кроссовок за все тренировки
             function getDistance(id_sneakers){
+                console.log('id sneakers'+id_sneakers)
                 let workout = document.querySelector('#workout_table')
                 let rows = workout.getElementsByTagName('tr')
+                if (rows.length === 0) return 0 //если тренировок в кроссовках не было то возвращаем 0
                 let distance = 0
                 for (let i = 1; i < rows.length; i++) {
                     let td = rows[i].getElementsByTagName('td')
@@ -226,13 +272,12 @@
             // функция для получения названия производителя и модели кроссовок из общего списка обуви
             // по идентификатору кроссовок в тренировке и номеру ячейки
             function getTdFromSneakersTable(sneakers_id, id_td){
-                console.log('getTdFromSneakersTable ' + sneakers_id + ' ' + id_td)
                 for (let i = 1; i < rows_table_sneakers.length; i++) {
                     let td = rows_table_sneakers[i].getElementsByTagName('td')
-                    console.log('td ' + td[0].innerText)
                     if(td[0].innerText === sneakers_id) return td[id_td].innerText
                 }
             }
+            /*]]>*/
         </script>
     </body>
 </html>

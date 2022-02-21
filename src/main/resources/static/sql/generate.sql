@@ -17,7 +17,6 @@ create table producers (
 create table models (
     id int serial default value,
     name varchar(20),
-    version varchar(20),
     limitation int,
     description text,
     producer_id int not null,
@@ -68,16 +67,16 @@ insert into producers (name) values ('Nike');
 
 
 -- заполение таблицы моделей кроссовок
-insert into models(name, version, limitation, description, producer_id)
-VALUES ('NB 1080', 'v11', 600, 'для тренировок', 1);
-insert into models(name, version, limitation, description, producer_id)
-VALUES ('Saucony trail', '5v', 670, 'для трейла', 2);
-insert into models(name, version, limitation, description, producer_id)
-VALUES ('Hoka S4', '2s', 900, 'для быстрого бега', 3);
-insert into models(name, version, limitation, description, producer_id)
-VALUES ('Nike One', 'ver4', 400, 'для соревнований', 4);
-insert into models(name, version, limitation, description, producer_id)
-VALUES ('NB 890', 'ver12', 800, 'для тренировок', 1);
+insert into models(name, limitation, description, producer_id)
+VALUES ('NB 1080', 600, 'для тренировок', 1);
+insert into models(name, limitation, description, producer_id)
+VALUES ('Saucony trail', 670, 'для трейла', 2);
+insert into models(name, limitation, description, producer_id)
+VALUES ('Hoka S4', 900, 'для быстрого бега', 3);
+insert into models(name, limitation, description, producer_id)
+VALUES ('Nike One', 400, 'для соревнований', 4);
+insert into models(name, limitation, description, producer_id)
+VALUES ('NB 890', 800, 'для тренировок', 1);
 
 -- заполнение таблицы фактических пар кроссовок
 insert into sneakers (pair_number, enable, note, model_id, account_id)

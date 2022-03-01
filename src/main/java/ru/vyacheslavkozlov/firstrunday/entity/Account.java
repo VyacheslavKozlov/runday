@@ -1,18 +1,17 @@
 package ru.vyacheslavkozlov.firstrunday.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -23,15 +22,17 @@ public class Account {
     private String firstName;
     private String lastName;
     private String email;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private boolean enable;
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Sneakers> sneakers;
 }

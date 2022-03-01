@@ -1,9 +1,13 @@
 package ru.vyacheslavkozlov.firstrunday.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.io.Serializable;
 import java.util.List;
 
 @NoArgsConstructor
@@ -14,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode
 @Entity
 @Table(name = "sneakers")
-public class Sneakers {
+public class Sneakers implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,14 +34,17 @@ public class Sneakers {
     @Column(name = "note")
     private String note;
 
+    @JsonManagedReference
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "model_id")
     private ShoeModel shoeModel;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "sneakers", cascade = CascadeType.ALL)
     private List<Workout> workouts;
 

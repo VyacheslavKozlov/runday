@@ -2,9 +2,309 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/style.css}" />
     <title>RunDay</title>
 </head>
 <body>
     <h1>Привет, Admin</h1>
+
+    <div id="runners"></div>
+    <div>
+        <form id="editAccount" action="#">
+            <input id="editName" type="text" placeholder="name"/>
+            <input id="editSurname" type="text" placeholder="surname"/>
+            <label>ACTIVE/BANNED<input id="isActive" type="checkbox"/></label>
+            <label>ADMIN<input id="isAdmin" type="checkbox"/></label>
+            <input id="btn-edit" type="submit" value="edit"/>
+        </form>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+
+    <div id="producers"></div>
+    <div>
+        <form id="editProducer" action="#">
+            <input id="editProducerName" type="text" placeholder="name"/>
+            <input id="btnEditProducer" type="submit" value="edit producer"/>
+        </form>
+        <div>
+            <a id="btn-delete-producer" href="#">Delete</a>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <div id="shoeModels"></div>
+    <div>
+        <form id="editShoeModel" action="#">
+            <select id="selectProducer">
+
+            </select>
+            <input id="editShoeModelName" type="text" placeholder="name"/>
+            <input id="editShoeModelLimit" type="text" placeholder="name"/>
+            <input id="editShoeModelDesc" type="text" placeholder="name"/>
+            <input id="btnEditShoeModel" type="submit" value="edit shoemodel"/>
+        </form>
+        <div>
+            <a id="btn-delete-shoemodel" href="#">Delete</a>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function (){
+
+            let listRunners;
+            let selectRunner;
+
+            let listProducers;
+            let selectProducer;
+
+            let listShoeModels;
+            let selectShoeModel;
+
+            //получаем данные об аккаунтах и формируем в таблице
+            getAllAccounts();
+
+            //получаем данные о производителях и формируем таблицу
+            getAllProducers();
+
+            //получение данных о моделях кроссовок
+            getAllShoeModels();
+
+            //обработчик ссылки при удалении призводителя обуви
+            $('#btn-delete-producer').click(function (event){
+                event.preventDefault();
+                deleteProducer();
+            });
+
+            //обработка формы редактирования пользователя, отправка данных на сервер
+            $('#editAccount').submit(function (event){
+                event.preventDefault();
+                let form = $(this);
+                selectRunner.firstName = $('#editName').val();
+                selectRunner.lastName = $('#editSurname').val();
+                console.log($('#editSurname').val());
+                if ($('#isAdmin').is(':checked')) selectRunner.role = 'ADMIN';
+                else selectRunner.role = 'USER';
+                if ($('#isActive').is(':checked')) selectRunner.status = 'ACTIVE';
+                else selectRunner.status = 'BANNED';
+                console.log('btn');
+                $.ajax({
+                    url: '/runday/admin/runneredit',
+                    method: 'PATCH',
+                    // dataType: 'json',
+                    cache: false,
+                    contentType: 'application/json',
+                    data: JSON.stringify(selectRunner),
+                    success: function (){
+                        console.log('success');
+                        setTimeout(function (){
+                            form.trigger('reset');
+                            $('#runners').trigger('reset');
+                        }, 0);
+                        getAllAccounts();
+                        selectRunner = null;
+                    },
+                    error: function(xhr, status, error){
+                        let errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                    }
+                })
+            })
+            // фукнция получения списка всех пользователей
+            function getAllAccounts(){
+                $.ajax({
+                    method: 'GET',
+                    url: '/runday/admin/runner',
+                    fail: function (){alert('все пропало!')},
+                    success: function (list){
+                        showAllAccounts(list)
+                        // слушатель на каждую строку таблицы пользователей
+                        $('#runners tr').on('click', function (){
+                            let index = $(this).index();
+                            selectRunner = listRunners[index];
+                            $('#editName').val(listRunners[index].firstName);
+                            $('#editSurname').val(listRunners[index].lastName);
+                            if (listRunners[index].status === 'ACTIVE') $('#isActive').prop('checked', true);
+                            else $('#isActive').prop('checked', false);
+                            if (listRunners[index].role === 'ADMIN') $('#isAdmin').prop('checked', true);
+                            else $('#isAdmin').prop('checked', false);
+
+                            console.log('click');
+                            console.log(selectRunner);
+                        })
+                    }
+                })
+            }
+            // функция добавления таблицы с пользователями на страницу admin
+            function showAllAccounts(list){
+                let rows = '<table>'
+                for (let i = 0; i < list.length; i++) {
+                    rows = rows + '<tr id="account"><td>' + list[i].id + '</td>' +
+                        '<td>' + list[i].firstName + '</td>' +
+                        '<td>' + list[i].lastName + '</td>' +
+                        '<td>' + list[i].status + '</td>' +
+                        '<td>' + list[i].role + '</td></tr>';
+                }
+                rows += '</table>'
+                listRunners = list
+                $('#runners').html(rows);
+            }
+
+            //обработка формы редактирования производителя, отправка данных на сервер
+            $('#editProducer').submit(function (event){
+                event.preventDefault();
+                let form = $(this);
+                if (selectProducer === undefined) {
+                    $.ajax({
+                        url: '/runday/admin/produceradd',
+                        method: 'POST',
+                        cache: false,
+                        data: $('#editProducerName').val(),
+                        success: function (){
+                            console.log('success');
+                            setTimeout(function (){
+                                form.trigger('reset');
+                                $('#producers').trigger('reset');
+                            }, 0)
+                            getAllProducers();
+                            selectProducer = undefined;
+                        },
+                        error: function(xhr, status, error){
+                            let errorMessage = xhr.status + ': ' + xhr.statusText;
+                            alert('Error - ' + errorMessage);
+                        }
+                    })
+                }
+                else {
+                    console.log(selectProducer);
+                    selectProducer.name = $('#editProducerName').val();
+                    console.log('btn edit producer');
+                    $.ajax({
+                        url: '/runday/admin/produceredit',
+                        method: 'PATCH',
+                        cache: false,
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(selectProducer),
+                        success: function (){
+                            console.log('success');
+                            setTimeout(function (){
+                                form.trigger('reset');
+                                $('#producers').trigger('reset');
+                            }, 0)
+                            getAllProducers();
+                            selectProducer = undefined;
+                        },
+                        error: function(xhr, status, error){
+                            let errorMessage = xhr.status + ': ' + xhr.statusText;
+                            alert('Error - ' + errorMessage);
+                        }
+                    })
+                }
+
+            });
+            //функция получения списка производителей
+            function getAllProducers(){
+                $.ajax({
+                    url: '/runday/admin/producer',
+                    method: 'GET',
+                    // dataType: 'json',
+                    fail: function (){alert('все пропало!')},
+                    success: function (list){
+                        showAllProducers(list);
+                        //обработка клика по строке таблицы
+                        $('#producers tr').on('click', function (){
+                            let index = $(this).index();
+                            selectProducer = listProducers[index];
+                            $('#editProducerName').val(selectProducer.name);
+                        })
+                    }
+
+
+                })
+            }
+            //функция добавления таблицы с производителями обуви
+            function showAllProducers(list){
+                let rows = '<table>'
+                for (let i = 0; i < list.length; i++) {
+                    rows = rows + '<tr id="account"><td>' + list[i].id + '</td>' +
+                        '<td>' + list[i].name + '</td></tr>';
+                }
+                rows += '</table>'
+                listProducers = list
+                $('#producers').html(rows);
+            }
+            //функция удаления производителя из таблицы
+            function deleteProducer(){
+                if (selectProducer !== undefined) {
+                    $.ajax({
+                        url: '/runday/admin/producer/'+selectProducer.id,
+                        method: 'DELETE',
+                        cache: false,
+                        success: function (){
+                            console.log('success');
+                            setTimeout(function (){
+                                $('#producers').trigger('reset');
+                            }, 0)
+                            getAllProducers();
+                            selectProducer = undefined;
+                            $('#editProducerName').val('');
+                        },
+                        error: function(xhr, status, error){
+                            let errorMessage = xhr.status + ': ' + xhr.statusText;
+                            alert('Error - ' + errorMessage);
+                        }
+                    })
+                }
+            }
+
+            //функция получения списка моделей
+            function getAllShoeModels(){
+                $.ajax({
+                    url: '/runday/admin/shoemodels',
+                    method: 'GET',
+                    fail: function (){alert('все пропало!')},
+                    success: function (list){
+                        console.log(list);
+                        showAllShoeModels(list);
+                        // обработка клика по строке таблицы
+                        $('#shoeModels tr').on('click', function (){
+                            let index = $(this).index();
+                            selectShoeModel = listShoeModels[index];
+                            console.log(selectShoeModel)
+                            $('#editShoeModelName').val(selectShoeModel.name);
+                            $('#editShoeModelLimit').val(selectShoeModel.limitation);
+                            $('#editShoeModelDesc').val(selectShoeModel.description);
+                        })
+                    }
+                })
+            }
+            //функция добавлления данных о моделях обуви в таблицу
+            function showAllShoeModels(list){
+                let rows = '<table>'
+                for (let i = 0; i < list.length; i++) {
+                    rows = rows + '<tr class="shoe-model"><td>' + list[i].id + '</td>' +
+                        '<td>' + list[i].producer.name + '</td>' +
+                        '<td>' + list[i].name + '</td>' +
+                        '<td>' + list[i].limitation + '</td>' +
+                        '<td>' + list[i].description + '</td></tr>';
+                }
+                rows += '</table>'
+                listShoeModels = list
+                $('#shoeModels').html(rows);
+            }
+        })
+    </script>
 </body>
 </html>

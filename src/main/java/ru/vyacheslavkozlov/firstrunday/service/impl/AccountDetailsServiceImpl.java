@@ -5,13 +5,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.vyacheslavkozlov.firstrunday.config.security.SecurityAccount;
 import ru.vyacheslavkozlov.firstrunday.entity.Account;
 import ru.vyacheslavkozlov.firstrunday.entity.Role;
 import ru.vyacheslavkozlov.firstrunday.entity.Status;
 import ru.vyacheslavkozlov.firstrunday.repository.AccountRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service("accountDetailsServiceImpl")
 @AllArgsConstructor
@@ -39,6 +41,21 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
         accountRepository.save(account);
     }
 
+    public void update(Account account){
+        Account byId = accountRepository.findById(account.getId()).get();
+        byId.setFirstName(account.getFirstName());
+        byId.setLastName(account.getLastName());
+        byId.setRole(account.getRole());
+        byId.setStatus(account.getStatus());
+        accountRepository.save(byId);
+    }
 
+    public List<Account> findAll() {
+        return accountRepository.findAll();
+    }
+
+    public Account findById(int id){
+        return accountRepository.findById(id).get();
+    }
 
 }

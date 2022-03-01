@@ -1,5 +1,7 @@
 package ru.vyacheslavkozlov.firstrunday.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,6 +27,8 @@ public class Workout {
     @Column(name = "health", columnDefinition = "integer default 3")
     private int health;
     @ManyToOne(cascade = CascadeType.REFRESH)
+
+    @JsonManagedReference
     @JoinColumn(name = "sneakers_id")
     private Sneakers sneakers;
 

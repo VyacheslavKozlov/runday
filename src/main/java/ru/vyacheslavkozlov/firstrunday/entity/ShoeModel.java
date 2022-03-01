@@ -1,11 +1,14 @@
 package ru.vyacheslavkozlov.firstrunday.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,8 +18,8 @@ import java.util.List;
 @EqualsAndHashCode
 @Entity
 @Table(name = "models")
-public class ShoeModel {
-    private static final long serialVersionUID = 1L;
+public class ShoeModel implements Serializable {
+//    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -35,10 +38,12 @@ public class ShoeModel {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @JsonManagedReference
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "producer_id", nullable = false)
     private Producer producer;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "shoeModel", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<Sneakers> sneakers;
 

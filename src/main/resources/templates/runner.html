@@ -1,282 +1,430 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" media="all" href="../../css/modal.css" th:href="@{/css/modal.css}" />
-    <title>RunDay</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/style.css}"/>
+        <title>RunDay</title>
+    </head>
     <body>
-        <h1 th:inline="text">Привет [[${#httpServletRequest.remoteUser}]]!</h1>
-        <div class="header">
-            <h1>RunDay</h1>
-        </div>
-
-        <div class="profile_container">
-            <div class="profile_content">
-                <img src="#" alt="photo_profile">
-                <h3>
-                    <span th:text="${account.getFirstName()}"></span>
-                    <span th:text="${account.getLastName()}"></span>
-                </h3>
+<!--        <h1 th:inline="text">Привет [[${#httpServletRequest.remoteUser}]]!</h1>-->
+        <header style="height: 50px; background-color: #fff;">
+            <div class="container">
+                <div class="row">
+                    <div class="col"></div>
+                </div>
             </div>
-        </div>
+        </header>
 
-        <div class="sneakers_container">
-            <h2>Ваши кроссовки</h2>
-            <table id="table_sneakers">
-                <tr>
-                    <th>Производитель</th>
-                    <th>Модель</th>
-                </tr>
-                <tr id="#sneakers_row" th:each="s : ${sneakers}">
-                    <td th:text="${s.getId()}" hidden="true">id</td>
-                    <td th:text="${s.getShoeModel().getProducer().getName()}">producer</td>
-                    <td th:text="${s.getShoeModel().getName()}">producer</td>
-                    <td th:text="${s.getShoeModel().getLimitation()}" hidden="true">limit</td>
-                    <td th:text="${s.getShoeModel().getDescription()}" hidden="true">id</td>
-                    <td th:text="${s.isEnable()}" hidden="true">enable</td>
-                    <td th:text="${s.getPair_number()}" hidden="true">pair</td>
-                    <td th:text="${s.getNote()}" hidden="true">note</td>
-                    <td th:text="${s.getShoeModel().getProducer().getId()}" hidden="true">producer</td>
-                    <td th:text="${s.getShoeModel().getId()}" hidden="true">producer</td>
-                </tr>
-            </table>
-            <br>
-            <div class="sneakers_profile">
-                <h2>Какие-то кроссовки</h2>
-                <img src="#" alt="img_sneakers"/>
-                <label>Идентификатор <span id="sneakers_profile_id" hidden="true">id</span></label>
-                <label>Производитель <span id="sneakers_profile_producer">Призводитель</span></label>
-                <label>Модель <span id="sneakers_profile_model">Модель</span></label>
-                <label>Описание <span id="sneakers_profile_description">Описание</span></label>
-                <label>Рекомендованный пробег <span id="sneakers_profile_limit">Лимит</span></label>
-                <label>Фактический пробег <span id="sneakers_profile_distance">Пробег</span></label>
-                <lable>Пара № <span id="sneakers_profile_pair">Пара</span></lable>
-                <span id="sneakers_profile_enable">Действующие</span>
-                <span id="sneakers_profile_note">Заметка</span>
-
-                <a id="sneakers_edit_modal" href="#sneakers_modal">Редактировать</a>
-<!--                <a href="#sneakers_modal">Удалить</a>-->
-            </div>
-        </div>
-        <br/>
-        <br/>
-        <div class="workout_container">
-            <h2>Ваши тренировки</h2>
-            <table id="workout_table">
-                <tr>
-                    <th>Id</th>
-                    <th>Дата</th>
-                    <th>Расстояние</th>
-                    <th>Время</th>
-                </tr>
-                <tr th:each="w : ${workout}">
-                    <td th:text="${w.getId()}">id</td>
-                    <td th:text="${w.getDate()}">id</td>
-                    <td th:text="${w.getDistance()}">id</td>
-                    <td th:text="${w.getTime()}">id</td>
-                    <td th:text="${w.getHealth()}" hidden="true">id</td>
-                    <td th:text="${w.getSneakers().getId()}" hidden="true">id</td>
-                    <td th:text="${w.getSneakers().getShoeModel().getProducer().getName()}" hidden="true">id</td>
-                    <td th:text="${w.getSneakers().getShoeModel().getName()}" hidden="true">id</td>
-                </tr>
-            </table>
-            <br/>
-
-            <div class="workout_profile">
-                <label>Дата <span id="workout_date"></span></label>
-                <label>Расстояние <span id="workout_distance"></span></label>
-                <label>Время <span id="workout_time"></span></label>
-                <label>Самочувствие <span id="workout_health"></span></label>
-                <label>Кроссовки <span id="workout_producer"></span><span id="workout_shoemodel"></span></label>
-            </div>
-        </div>
-
-<!--        <div style="text-align: center;">-->
-<!--            <a href="#openModal">Открыть модальное окно</a>-->
-<!--        </div>-->
-
-        <div id="sneakers_modal" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Редактирование кроссовок</h3>
-                        <a href="#close" title="Close" class="close">×</a>
+        <section>
+            <div class="container mt-2">
+                <div class="row justify-content-around">
+                    <div class="col-3 sb-container" >
+                        <div class="row mt-3">
+                            <div class="col text-center"><img id="profile-img" class="shadow" src="/img/profile/cat.jpg" alt="logo" /></div>
+                        </div>
+                        <div class="row justify-content-center mt-2">
+                            <div class="col-7 offset-md-1 text-center">
+                                <label class="label-profile">
+                                    <span th:text="${account.getFirstName()}"></span>
+                                    <span th:text="${account.getLastName()}"></span>
+                                </label>
+                            </div>
+                            <div class="col-1">
+                                <img src="/img/icon/pencil-square.svg" alt="edit-icon"/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col text-center"><label>Тренировки</label></div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center"><label class="label-profile" id="count-workout">598</label></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col text-center"><label>Общий объем</label></div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center"><label class="label-profile" id="general-distance">6140км</label></div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col text-center"><label>Затрчено времени</label></div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center"><label class="label-profile" id="general-time">601ч</label></div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-7">
+                                <button type="button" class="btn-singIn mt-3 mb-3">Покинуть приложение</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <form class="form_edit_sneakers">
-                            <label>Производитель </label>
-                            <select th:field="*{producers}" id="selectProducer">
-                                <div th:each="p : ${producers}">
-                                    <option th:value="${p.id}" th:text="${p.name}"></option>
+
+<!----------------------------------------------workout------------------------------------------------------>
+                    <div class="col-5">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label class="label-profile">Тренировки</label>
+                            </div>
+                        </div>
+                        <div class="row sb-container mt-3">
+                            <table id="workout_table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Дата</th>
+                                        <th scope="col">Описание</th>
+                                        <th scope="col">Расстояние(км)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+<!-------------------------------------workout profile----------------------------------------------->
+                        <div class="row sb-container mt-3">
+                            <!-- <div class="col-1 align-self-center"> <img src="img/icon/arrow-left-circle.svg"/></div> -->
+                            <div class="col-10 offset-md-1">
+                                <div class="row mt-2">
+                                    <div class="col text-center"><label id="workout_date" style="font-size: large;">12.02.2022</label></div>
                                 </div>
-                            </select>
-                            <br/>
-                            <label>Модель </label>
-                            <select th:field="*{shoeModels}" id="selectModel">
-                                <div th:each="s : ${shoeModels}">
-                                    <option th:value="${s.getProducer().getId()}" th:text="${s.name}"></option>
+                                <div class="row mt-2">
+                                    <div class="col-6 text-center"><label id="workout_time" style="font-size: larger;">Время 57:35</label></div>
+                                    <div class="col-6 text-center"><label id="workout_temp" style="font-size: larger;">Темп 5:41/км</label></div>
                                 </div>
-                            </select>
-                            <br/>
-                            <label>Рекомендуемый пробег </label> <span id="sneakers_edit_limit"></span>
-                            <br/>
-                            <label>Фактический пробег </label> <span id="sneakers_edit_distance"></span>
-                            <br/>
-                            <label>Пара </label> <span id="sneakers_edit_pair"></span>
-                            <br/>
-                            <label>Заметка </label> <span id="sneakers_edit_note"></span>
-                            <br/>
-                            <button type="submit">Ок</button>
-                        </form>
+                                <div class="row mt-2">
+                                    <div class="col text-center"><label id="workout_distance" style="font-size: large;">12,2км</label></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 text-center">
+                                        <div class="row justify-content-center">
+                                            <div class="col-6 text-center"><label>Описание</label></div>
+                                        </div>
+                                        <div class="row mt-1">
+                                            <div class="col text-center"><label>Вечерняя тренировка, на которой я
+                                                устал, как-будто пахал трое суток без отдыха.
+                                                Больше никогда так напрягаться не буду!</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <div class="row mt-2 justify-content-center">
+                                            <div class="col text-center"><label>Самочувствие</label></div>
+                                        </div>
+                                        <div class="row mt-1 justify-content-center">
+                                            <div class="col text-center"><label id="workout_health">Звезды рейтинга</label></div>
+                                        </div>
+                                        <div class="row mt-2 justify-content-center">
+                                            <div class="col text-center"><label>Кроссовки</label></div>
+                                        </div>
+                                        <div class="row mt-1 justify-content-center">
+                                            <div class="col-6 text-center">
+                                                <div id="block-logo-sneaker-big">
+                                                    <img id="logo-sneaker-dig" src="/img/logo_sneaker/nb.svg"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-1 justify-content-center">
+                                            <div class="col text-center"><label><span id="workout_producer"></span> <span id="workout_shoemodel"></span></label></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-1 offset-md-5"><img src="/img/icon/pencil-square.svg" alt="btn-edit"/></div>
+                                    <div class="col-1"><img src="/img/icon/delete.svg" alt="btn-edit"/></div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-1 align-self-center"><img src="img/icon/arrow-right-circle.svg"/></div> -->
+                        </div>
+                    </div>
+
+<!--------------------------------------sneakers_table-------------------------------------------------------->
+                    <div class="col-3">
+                        <div class="row">
+                            <div class="col text-center">
+                                <label class="label-profile">Кроссовки</label>
+                            </div>
+                        </div>
+                        <div class="row sb-container mt-3">
+                            <table class="" id="table_sneakers">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Производитель</th>
+                                        <th scope="col">Модель</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+<!-----------------------------------------sneakers_profile---------------------------------------->
+                        <div class="row sb-container mt-3">
+                            <div class="col">
+                                <div class="row mt-2">
+                                    <div class="col-6 offset-md-1 text-center">
+                                        <div id="block-logo-sneaker-big">
+                                            <img id="logo-sneaker-dig" src="/img/logo_sneaker/nb.svg"/>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col">
+                                                <span id="sneakers_profile_id" hidden>id</span>
+                                                <span id="sneakers_profile_pair" hidden>Пара</span>
+                                                <span id="sneakers_profile_enable" hidden>Действующие</span>
+                                                <label id="sneakers_profile_producer">New balance</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col"><label id="sneakers_profile_model">1080</label></div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="sneakers_profile_countworkout" class="col"><label>Тренировки 81</label></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center"><label style="font-size: larger;"><span id="sneakers_profile_distance">567</span>/<span id="sneakers_profile_limit">234</span></label></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center"><label>Пробег/Лимит</label></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-10 offset-md-1 text-start"><label>Заметка</label></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-10 offset-md-1 text-start"><label id="sneakers_profile_note">Для тренировок по асфальту</label></div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-10 offset-md-1 text-start"><label>Описание производителя</label></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-10 offset-md-1 text-start"><label id="sneakers_profile_description">Данная модель кроссовок
+                                        предназначена для комфортного бега в рамках тренировок</label></div>
+                                </div>
+                                <div class="row mt-2 mb-3">
+                                    <div class="col-5 offset-md-1">
+                                        <div id="btn-show-edit-sneakers">
+                                            <img src="/img/icon/pencil-square.svg" alt="btn-edit"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-1 offset-md-2"><img src="/img/icon/delete.svg" alt="btn-edit"/></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row sb-container mt-3">
+                            <div class="col offset-md-1">
+                                <form id="edit-sneakers">
+                                        <span>Редактирование кроссовок</span>
+                                        <br/>
+                                        <label>Производитель</label><label id="sneakers-edit-producer"></label>
+                                        <br/>
+                                        <label>Модель</label><label id="sneakers-edit-model"></label>
+                                        <br/>
+                                        <label>Заметка</label><input id="sneakers-edit-note" value=""/>
+
+                                        <input class="btn-singIn mb-2" type="submit" value="Редактировать">
+                                </form>
+                            </div>
+                        </div>
+
+
+
+
+
+
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <footer class="mt-2">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-5 text-center">
+                        <label>Обратная связь</label>
+                        <img src="/img/icon/phone.svg"/>
+                        <label>8(924)123-12-12</label>
+                        <img src="/img/icon/email.svg"/>
+                        <label>help@mail.ru</label>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
 
 <!-------------------------------------SCRIPTS----------------------------------------------->
 
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-        <script th:inline="javascript">
+        <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+        <script text="javascript">
             /*<![CDATA[*/
 
-            let rows_table_sneakers = document.querySelector('#table_sneakers').getElementsByTagName('tr')
-            addRowHover(rows_table_sneakers)
 
-            let rows_table_workout = document.querySelector('#workout_table').getElementsByTagName('tr')
-            addRowHover(rows_table_workout)
+                $(document).ready(function () {
 
-            let sneakersProfileId = document.querySelector('#sneakers_profile_id')
-            let sneakersProfileProducer = document.querySelector('#sneakers_profile_producer')
-            let sneakersProfileModel = document.querySelector('#sneakers_profile_model')
-            let sneakersProfilePair = document.querySelector('#sneakers_profile_pair')
-            let sneakersProfileEnable = document.querySelector('#sneakers_profile_enable')
-            let sneakersProfileLimit = document.querySelector('#sneakers_profile_limit')
-            let sneakersProfileNote = document.querySelector('#sneakers_profile_note')
-            let sneakersProfileModelDesc= document.querySelector('#sneakers_profile_description')
-            let sneakersProfileDistance = document.querySelector('#sneakers_profile_distance')
+                    let listSneakers;
+                    let selectSneaker;
 
-            // обработка клика на строку из таблицы кроссовок и добавление данных обуви в отдельный блок
-            // для получения полной информации
-            $('#table_sneakers').click(function(event) {
-                let row_sneakers = event.target.closest('tr')
+                    let listWorkout;
+                    let selectWorkout;
 
-                if (row_sneakers.rowIndex === 0) return;
-                if (!row_sneakers) return;
-                let cell_sneakers = row_sneakers.getElementsByTagName('td')
+                    //получаем и показываем все тренировки пользователя
+                    getAllWorkout();
 
-                sneakersProfileId.innerHTML = cell_sneakers[0].innerHTML
-                sneakersProfileProducer.innerHTML = cell_sneakers[1].innerHTML
-                sneakersProfileModel.innerHTML = cell_sneakers[2].innerHTML
-                sneakersProfileLimit.innerHTML = cell_sneakers[3].innerHTML
-                sneakersProfileModelDesc.innerHTML = cell_sneakers[4].innerHTML
-                sneakersProfileEnable.innerHTML = cell_sneakers[5].innerHTML === 'true' ? 'Ещё можно гонять' : 'Убитые'
-                sneakersProfilePair.innerHTML = cell_sneakers[6].innerHTML
-                sneakersProfileNote.innerHTML = cell_sneakers[7].innerHTML
-                sneakersProfileDistance.innerHTML = getDistance(sneakersProfileId.innerHTML)
-            });
+                    //получаем и показываем все кроссовки пользователя
+                    getAllSneakers();
 
-            // обработка клика на строку из таблицы тренировок и добавление данных тренировки в отдельный блок
-            // для получения полной информации
-            $('#workout_table').click(function (event){
-                let row_workout = event.target.closest('tr')
-                if (row_workout.rowIndex === 0) return;
-                if(!row_workout) return
-                let cell_workout = row_workout.getElementsByTagName('td')
-
-                let workoutProfileSneakersId = cell_workout[5].innerText
-                let workoutProfileDate = document.querySelector('#workout_date')
-                let workoutProfileDistance = document.querySelector('#workout_distance')
-                let workoutProfileTime = document.querySelector('#workout_time')
-                let workoutProfileHealth = document.querySelector('#workout_health')
-                let workoutProfileProducer = document.querySelector('#workout_producer')
-                let workoutProfileModel = document.querySelector('#workout_shoemodel')
-
-                workoutProfileDate.innerText = cell_workout[1].innerText
-                workoutProfileDistance.innerText = cell_workout[2].innerText
-                workoutProfileTime.innerText = cell_workout[3].innerText
-                workoutProfileHealth.innerText = cell_workout[4].innerText
-                workoutProfileProducer.innerText = getTdFromSneakersTable(workoutProfileSneakersId, 1)
-                workoutProfileModel.innerText = getTdFromSneakersTable(workoutProfileSneakersId, 2)
-            });
-
-            // обработка модального окна: добавление данных из профиля кроссовок в модальное окно, для редактирования
-            $('#sneakers_edit_modal').click(function () {
-
-                let selectProducers = document.querySelector('#selectProducer')
-                let optionProducers = selectProducers.options
-                let optionModel = document.querySelector('#selectModel').options
-                let limit = document.querySelector('#sneakers_edit_limit')
-                let distance = document.querySelector('#sneakers_edit_distance')
-                let pair = document.querySelector('#sneakers_edit_pair')
-                let note = document.querySelector('#sneakers_edit_note')
-
-                limit.innerHTML = sneakersProfileLimit.innerText
-                distance.innerHTML = getDistance(sneakersProfileId.innerHTML)
-                pair.innerHTML = sneakersProfilePair.innerHTML
-                note.innerHTML = sneakersProfileNote.innerHTML
-
-                for (let option of optionProducers)
-                    if (option.text === sneakersProfileProducer.innerText) option.selected = true
-
-                for (let option of optionModel)
-                    if (option.text === sneakersProfileModel.innerText) option.selected = true
-
-                selectProducers.addEventListener('change', function (event){
-                    let selectedOptionProducer = event.target.options.selectedIndex+1
-                    for (let option of optionModel) {
-                        if (Number(option.value) !== Number(selectedOptionProducer)) option.style.display = 'none'
-                        else {
-                            option.selected = true
-                            option.style.display = 'inline'
+                    $('#btn-show-edit-sneakers').on('click', function (){
+                        if (selectSneaker !== undefined) {
+                            $('#sneakers-edit-producer').text(selectSneaker.shoeModel.producer.name);
+                            $('#sneakers-edit-model').text(selectSneaker.shoeModel.name);
+                            $('#sneakers-edit-note').val(selectSneaker.note);
                         }
+                    })
+
+                    $('#edit-sneakers').submit(function (event){
+                        event.preventDefault();
+                        selectSneaker.note = $('#sneakers-edit-note').val();
+                        $.ajax({
+                            url: '/runday/runner/sneakers/update',
+                            method: 'PATCH',
+                            cache: false,
+                            contentType: 'application/json; charset=utf-8',
+                            data: JSON.stringify(selectSneaker),
+                            success: function (){
+                                console.log('success');
+                                getAllSneakers();
+                                setTimeout(function (){
+                                    $('#edit-sneakers').trigger('reset');
+                                    $('#table_sneakers').trigger('reset');
+                                }, 0);
+                                selectSneaker = null;
+                            },
+                            error: function(xhr, status, error){
+                                let errorMessage = xhr.status + ': ' + xhr.statusText;
+                                alert('Error - ' + errorMessage);
+                            }
+                        })
+
+
+
+                    })
+
+
+                    //функция получения списка всех кроссовок пользователя
+                    function getAllSneakers(){
+                        $.ajax({
+                            method: 'GET',
+                            url: '/runday/runner/sneakers',
+                            cache: false,
+                            dataType: 'json',
+                            fail: function (){alert('все пропало!')},
+                            success: function (list){
+                                showAllSneakers(list)
+                                // слушатель на каждую строку таблицы пользователей
+                                $('.sneaker-row').on('click', function (){
+                                    let index = $(this).index();
+                                    selectSneaker = list[index];
+                                    $('#sneakers_profile_producer').text(selectSneaker.shoeModel.producer.name);
+                                    $('#sneakers_profile_model').text(selectSneaker.shoeModel.name);
+                                    $('#sneakers_profile_limit').text(selectSneaker.shoeModel.limitation + 'км');
+                                    $('#sneakers_profile_note').text(selectSneaker.note);
+                                    $('#sneakers_profile_description').text(selectSneaker.shoeModel.description);
+                                    let count_workout = 0;
+                                    let km = 0;
+
+                                    for (let i = 0; i < listWorkout.length; i++) {
+                                        if (selectSneaker.id === listWorkout[i].sneakers.id) {
+                                            console.log(listWorkout[i].distance)
+                                            km += listWorkout[i].distance;
+                                            count_workout++;
+                                        }
+                                    }
+                                    $('#sneakers_profile_distance').text(km === 0 ? 0+'км' : (km/1000.0).toFixed(3)+'км');
+                                    $('#sneakers_profile_countworkout').text('Тренировки ' + count_workout);
+
+                                    console.log('click');
+                                    console.log(selectSneaker);
+                                })
+                            }
+                        })
                     }
-                    
+                    //функция для вставки данных кроссовок в sneakers_table
+                    function showAllSneakers(list){
+                        let rows;
+                        for (let i = 0; i < list.length; i++) {
+                            rows = rows + '<tr class="sneaker-row"><td>' + list[i].id + '</td>' +
+                                '<td>' + list[i].shoeModel.producer.name + '</td>' +
+                                '<td>' + list[i].shoeModel.name + '</td></tr>';
+                        }
+                        listSneakers = list
+                        $('#table_sneakers tbody').html(rows);
+                    }
+
+                    //функция получения списка всех тренировок пользователя
+                    function getAllWorkout(){
+                        $.ajax({
+                            url: '/runday/runner/workout',
+                            method: 'GET',
+                            dataType: 'json',
+                            cache: false,
+                            fail: function (){alert('все пропало')},
+                            success: function (list){
+                                console.log(list);
+                                showAllWorkout(list);
+                                // слушатель на каждую строку таблицы пользователей
+                                $('.workout-row').on('click', function (){
+                                    let index = $(this).index();
+                                    selectWorkout = list[index];
+                                    $('#workout_date').text(selectWorkout.date);
+                                    $('#workout_distance').text((selectWorkout.distance/1000.0).toFixed(3) + 'км');
+                                    $('#workout_producer').text(selectWorkout.sneakers.shoeModel.producer.name);
+                                    $('#workout_shoemodel').text(selectWorkout.sneakers.shoeModel.name);
+
+                                    let sec = ((selectWorkout.time/60)%60);
+                                    let hours = Math.floor((selectWorkout.time/60)/60);
+                                    $('#workout_time').text(hours + 'ч ' + sec + 'мин');
+                                    $('#workout_health').text(selectWorkout.health);
+                                    let km = selectWorkout.distance /1000.0;
+                                    let min = selectWorkout.time / 60.0;
+
+                                    $('#workout_temp').text(Math.floor(min/km) +':'+  (min%km)%60 + 'мин/км');
+
+                                    console.log('click');
+                                    console.log(selectWorkout);
+                                })
+                            }
+                        })
+                    }
+                    //функция для вставки данных тренировок в workout_table
+                    function showAllWorkout(list) {
+                        console.log('showWorkout');
+                        let general_distance=0;
+                        let general_time=0;
+                        let rows;
+                        for (let i = 0; i < list.length; i++) {
+                            rows = rows + '<tr class="workout-row"><td>' + list[i].id + '</td>' +
+                                '<td>' + list[i].date + '</td>' +
+                                '<td>' + ' ' + '</td>' +
+                                '<td>' + ((list[i].distance/1000.0).toFixed(3)) + '</td></tr>';
+                            general_distance += list[i].distance;
+                            general_time += list[i].time;
+                        }
+                        listWorkout = list;
+                        $('#count-workout').text(listWorkout.length);
+                        $('#general-distance').text((general_distance/1000.0).toFixed(3) + 'км');
+                        let sec = ((general_time/60)%60);
+                        let hours = Math.floor((general_time/60)/60);
+                        $('#general-time').text(hours + 'ч ' + sec + 'мин');
+                        $('#workout_table tbody').html(rows);
+                    }
                 })
-            });
 
 
-// --------------------------------------ФУНКЦИИ---------------------------------------
-
-            // добавление цвета строке таблицы при наведении
-            function addRowHover(rows_table){
-                for (let i = 1; i < rows_table.length; i++) {
-                    MakeRowHover(rows_table[i]);
-                }
-            }
-            function MakeRowHover(row) {
-                row.addEventListener("mouseover", function() {
-                    this.style.backgroundColor = "silver";
-                });
-
-                row.addEventListener("mouseout", function() {
-                    this.style.backgroundColor = "white";
-                });
-            }
-
-            // функция для подсчета фактического пробега кроссовок за все тренировки
-            function getDistance(id_sneakers){
-                console.log('id sneakers'+id_sneakers)
-                let workout = document.querySelector('#workout_table')
-                let rows = workout.getElementsByTagName('tr')
-                if (rows.length === 0) return 0 //если тренировок в кроссовках не было то возвращаем 0
-                let distance = 0
-                for (let i = 1; i < rows.length; i++) {
-                    let td = rows[i].getElementsByTagName('td')
-                    if (td[5].innerHTML === id_sneakers) distance += Number(td[2].innerText)
-                }
-                return distance
-            }
-
-            // функция для получения названия производителя и модели кроссовок из общего списка обуви
-            // по идентификатору кроссовок в тренировке и номеру ячейки
-            function getTdFromSneakersTable(sneakers_id, id_td){
-                for (let i = 1; i < rows_table_sneakers.length; i++) {
-                    let td = rows_table_sneakers[i].getElementsByTagName('td')
-                    if(td[0].innerText === sneakers_id) return td[id_td].innerText
-                }
-            }
             /*]]>*/
         </script>
     </body>
